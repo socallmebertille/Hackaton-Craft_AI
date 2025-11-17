@@ -1,0 +1,17 @@
+# Dockerfile pour Nginx - Reverse proxy et serveur de fichiers statiques
+
+FROM nginx:alpine
+
+# Supprimer la configuration par défaut
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copier la configuration nginx personnalisée
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY conf.d/ /etc/nginx/conf.d/
+
+# Créer les dossiers pour les différents sites
+RUN mkdir -p /var/www/mibs
+
+# Nginx expose les ports via docker-compose
+
+CMD ["nginx", "-g", "daemon off;"]
