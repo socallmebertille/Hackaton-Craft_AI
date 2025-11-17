@@ -1,0 +1,82 @@
+# Docker Compose - Configuration de DÉVELOPPEMENT
+# Usage: docker-compose -f docker-compose.dev.yml up
+
+services:
+  # Base de données PostgreSQL
+  database:
+    image: postgres:15-alpine
+    container_name: mibs_database_dev
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      # Exposer le port PostgreSQL pour debug (psql, DBeaver, etc.)
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    networks:
+      - mibs_network_dev
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend FastAPI avec hot-reload
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: mibs_backend_dev
+    env_file:
+      - .env
+    environment:
+      # Override pour Docker (DB host différent en local vs Docker)
+      DB_HOST: database
+      DB_PORT: ${DB_PORT}
+
+      # Mode debug
+      DEBUG: "true"
+    volumes:
+      # Monter le code source pour hot-reload
+      - ./backend:/app:rw
+    ports:
+      # Exposer le port backend pour debug direct
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - mibs_network_dev
+
+  # Nginx - Reverse Proxy + Serveur de fichiers statiques
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: mibs_nginx_dev
+    ports:
+      - "${NGINX_HTTP_PORT}:${NGINX_HTTP_PORT}"
+    volumes:
+      # Monter les fichiers frontend pour modifications en direct
+      - ./frontend:/var/www/mibs:rw
+
+      # Monter les configs nginx pour modifications en direct
+      - ./nginx/conf.d:/etc/nginx/conf.d:rw
+
+      # Logs
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - backend
+    networks:
+      - mibs_network_dev
+
+# Réseau isolé pour le dev
+networks:
+  mibs_network_dev:
+    driver: bridge
+
+volumes:
+  postgres_data_dev:
+    driver: local

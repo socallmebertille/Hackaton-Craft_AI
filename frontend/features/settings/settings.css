@@ -1,0 +1,447 @@
+/* === SETTINGS MODAL === */
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    animation: fadeIn 0.3s ease;
+}
+
+.settings-container {
+    background: #1a202c;
+    border-radius: 16px;
+    width: 700px;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #2d3748;
+    position: sticky;
+    top: 0;
+    background: #1a202c;
+    z-index: 10;
+}
+
+.settings-title {
+    font-size: 1.5rem;
+    color: #667eea;
+    margin: 0;
+}
+
+.settings-close {
+    background: none;
+    border: none;
+    color: #a0aec0;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.settings-close:hover {
+    background: #2d3748;
+    color: white;
+}
+
+.settings-tabs {
+    display: flex;
+    padding: 0 2rem;
+    border-bottom: 1px solid #2d3748;
+    background: #1a202c;
+    position: sticky;
+    top: 73px;
+    z-index: 9;
+    overflow-x: auto;
+}
+
+.settings-tab {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    color: #a0aec0;
+    white-space: nowrap;
+    font-size: 0.95rem;
+}
+
+.settings-tab:hover {
+    color: #cbd5e0;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.settings-tab.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+}
+
+.settings-content {
+    padding: 2rem;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    color: #e2e8f0;
+    margin-bottom: 1.5rem;
+    margin-top: 0;
+}
+
+.subsection-title {
+    font-size: 1.1rem;
+    color: #cbd5e0;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+}
+
+.subsection-title.danger-zone {
+    color: #fc8181;
+}
+
+.settings-section {
+    background: #2d3748;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    color: #e2e8f0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.settings-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #4a5568;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #1a202c;
+    color: #e2e8f0;
+    transition: border-color 0.2s ease;
+}
+
+.settings-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.settings-input:disabled {
+    background: #2d3748;
+    color: #718096;
+    cursor: not-allowed;
+}
+
+.form-help {
+    display: block;
+    color: #a0aec0;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Buttons */
+.settings-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    width: 100%;
+}
+
+.settings-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.settings-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.settings-button-outline {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.settings-button-outline:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.settings-button-danger {
+    background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.settings-button-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(252, 129, 129, 0.3);
+}
+
+.settings-button-danger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Messages */
+.success-message {
+    background: rgba(72, 187, 120, 0.1);
+    border: 1px solid #48bb78;
+    color: #48bb78;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.error-message {
+    background: rgba(252, 129, 129, 0.1);
+    border: 1px solid #fc8181;
+    color: #fc8181;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.warning-box {
+    background: rgba(237, 137, 54, 0.1);
+    border: 1px solid #ed8936;
+    color: #ed8936;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.warning-box p {
+    margin: 0.5rem 0;
+}
+
+.warning-box button {
+    margin-top: 0.5rem;
+}
+
+.info-box {
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid #667eea;
+    color: #cbd5e0;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+}
+
+.info-box p {
+    margin: 0.5rem 0;
+}
+
+/* Legal Content */
+.legal-content {
+    color: #cbd5e0;
+    line-height: 1.6;
+}
+
+.legal-content p {
+    margin: 0.75rem 0;
+}
+
+.legal-content strong {
+    color: #e2e8f0;
+}
+
+.legal-list {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    color: #a0aec0;
+}
+
+.legal-list li {
+    margin: 0.25rem 0;
+}
+
+.mt-3 {
+    margin-top: 1.5rem;
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid #4a5568;
+    margin: 2rem 0;
+}
+
+.danger-text {
+    color: #fc8181;
+    margin-bottom: 1rem;
+}
+
+/* Checkbox */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    color: #cbd5e0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 0.5rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Confirmation Modal */
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002;
+}
+
+.confirmation-box {
+    background: #2d3748;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.confirmation-box h4 {
+    color: #fc8181;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.confirmation-box p {
+    color: #cbd5e0;
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.confirmation-buttons button {
+    flex: 1;
+}
+
+/* Password Form */
+.password-form {
+    max-width: 500px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .settings-container {
+        width: 100%;
+        max-width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .settings-content {
+        padding: 1.5rem;
+    }
+
+    .settings-tabs {
+        font-size: 0.85rem;
+    }
+
+    .settings-tab {
+        padding: 0.75rem 1rem;
+    }
+
+    .confirmation-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Smooth scrolling */
+.settings-container {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+.settings-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.settings-container::-webkit-scrollbar-track {
+    background: #1a202c;
+}
+
+.settings-container::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 4px;
+}
+
+.settings-container::-webkit-scrollbar-thumb:hover {
+    background: #667eea;
+}

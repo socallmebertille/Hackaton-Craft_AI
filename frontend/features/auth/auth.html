@@ -1,0 +1,93 @@
+<!-- Auth Modal -->
+<div v-if="showAuthModal" class="auth-modal">
+    <div class="auth-container">
+        <div class="auth-header">
+            <img src="img/white_logo_MIBS.png" alt="MIBS Logo" class="auth-logo">
+            <h2 class="auth-title">Bienvenue sur MIBS</h2>
+            <p class="auth-subtitle">Plateforme de débats juridiques assistés par IA</p>
+        </div>
+        
+        <div class="auth-tabs">
+            <div 
+                class="auth-tab" 
+                :class="{ active: authMode === 'login' }" 
+                @click="authMode = 'login'"
+            >
+                Connexion
+            </div>
+            <div 
+                class="auth-tab" 
+                :class="{ active: authMode === 'signup' }" 
+                @click="authMode = 'signup'"
+            >
+                Inscription
+            </div>
+        </div>
+
+        <form @submit.prevent="authMode === 'login' ? login() : signup()" class="auth-form">
+            <input
+                type="email"
+                placeholder="Email"
+                v-model="authForm.email"
+                class="auth-input"
+                required
+            >
+            <input
+                type="password"
+                placeholder="Mot de passe"
+                v-model="authForm.password"
+                class="auth-input"
+                required
+                minlength="6"
+            >
+
+            <!-- Checkbox de consentement (uniquement pour l'inscription) -->
+            <div v-if="authMode === 'signup'" class="consent-section">
+                <label class="consent-label">
+                    <input
+                        type="checkbox"
+                        v-model="authForm.consent"
+                        required
+                    >
+                    <span class="consent-text">
+                        J'accepte les
+                        <a href="/terms-of-use.html" target="_blank" class="consent-link">conditions d'utilisation</a>
+                        et la
+                        <a href="/privacy-policy.html" target="_blank" class="consent-link">politique de confidentialité</a>.
+                    </span>
+                </label>
+            </div>
+
+            <button
+                type="submit"
+                class="auth-button"
+                :disabled="isAuthLoading || (authMode === 'signup' && !authForm.consent)"
+            >
+                {{ isAuthLoading ? 'Chargement...' : (authMode === 'login' ? 'Se connecter' : 'S\'inscrire') }}
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Profile Menu (pour le header) -->
+<div class="profile-menu">
+    <div class="profile-avatar" @click="toggleProfileDropdown">
+        <span>👤</span>
+    </div>
+    <div class="profile-dropdown" :class="{ show: showProfileDropdown }">
+        <div class="dropdown-header">
+            <div class="dropdown-name">{{ user && user.email ? user.email : 'user@example.com' }}</div>
+        </div>
+        <div class="dropdown-menu">
+            <div v-if="user && user.role === 2" class="dropdown-item" @click="openAdminPanel">
+                👑 Admin Panel
+            </div>
+            <div class="dropdown-item" @click="openSettings">
+                ⚙️ Paramètres
+            </div>
+            <div class="dropdown-item danger" @click="logout">
+                🚪 Déconnexion
+            </div>
+        </div>
+    </div>
+</div>

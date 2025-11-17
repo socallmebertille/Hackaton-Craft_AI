@@ -1,0 +1,101 @@
+/* === INDICATEUR DE FRAPPE === */
+.message-typing {
+    opacity: 1;
+}
+
+.bubble-typing {
+    background: linear-gradient(135deg, #2d3748 0%, #323c4b 100%);
+    color: white;
+    border-left: 5px solid #667de8;
+    border-bottom-left-radius: 0.25rem;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2rem;
+}
+
+.typing-indicator {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #64748b;
+    animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes typingBounce {
+    0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.typing-text {
+    font-size: 0.85rem;
+}
+
+/* === INDICATEUR DE STATUT === */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.status-indicator.processing::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #667eea;
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: pulse 1.5s infinite;
+}
+
+/* === MESSAGE DE BIENVENUE === */
+.welcome-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.welcome-message .message-bubble {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+}
+
+.welcome-message p {
+    margin-bottom: 0.75rem;
+}
+
+.welcome-message p:last-child {
+    margin-bottom: 0;
+}

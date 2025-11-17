@@ -1,0 +1,127 @@
+<!-- Header fixe - toujours visible -->
+<div class="chat-header">
+    <div class="header-content">
+        <h1>
+            <img src="img/white_logo.png" alt="Logo MIBS" style="height: 1.2em; vertical-align: middle;">
+            Assistant Juridique
+        </h1>
+        <p v-if="isAuthenticated && !isProcessing">Analyse et confronte les opinions juridiques divergentes sur une question.</p>
+        <p v-else-if="isAuthenticated && isProcessing" class="processing-status">
+            <span class="processing-dot"></span>
+            {{ typingText }}
+        </p>
+    </div>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+        <button 
+            v-if="isAuthenticated && messages.length > 0 && !isProcessing" 
+            @click="resetChat"
+            class="new-debate-btn"
+            title="Nouveau débat"
+        >
+            <img src="img/pen_icon.png" alt="Stylo éditer" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">
+            Nouveau
+        </button>
+        
+        <!-- Profile Menu sera injecté ici depuis auth.html -->
+        <div v-if="isAuthenticated" id="profile-menu-placeholder"></div>
+    </div>
+</div>
+
+<!-- Zone de conversation -->
+<div class="chat-container" ref="chatContainer">
+    <div class="chat-messages">
+
+        <!-- Messages de la conversation (si connecté) -->
+        <div v-if="isAuthenticated">
+        <!-- Messages de la conversation -->
+        <div 
+            v-for="message in messages" 
+            :key="message.id"
+            :class="['message', `message-${message.type}`]"
+        >
+            <div class="avatar" :class="`avatar-${message.type}`">
+                {{ getAvatarIcon(message.type) }}
+            </div>
+            <div class="message-content">
+                <div class="message-header" v-if="message.sender">
+                    <span class="sender-name">{{ message.sender }}</span>
+                    <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+                </div>
+                <div class="message-bubble" :class="`bubble-${message.type}`">
+                    <div v-if="message.type === 'user'" class="user-content">
+                        {{ message.content }}
+                    </div>
+                    <div v-else-if="message.type === 'pour' || message.type === 'contre'" class="argument-content">
+                        <div v-html="renderMarkdown(message.displayedContent || message.content)"></div>
+                    </div>
+                    <div v-else-if="message.type === 'summary'" class="summary-content">
+                        <h4>📄 Résumé du débat</h4>
+                        <div v-html="renderMarkdown(message.displayedContent || message.content)"></div>
+                    </div>
+                    <div v-else-if="message.type === 'assistant'" class="assistant-content">
+                        <div v-html="renderMarkdown(message.displayedContent || message.content)"></div>
+                    </div>
+                    <div v-else-if="message.type === 'export'" class="export-content">
+                        <div>{{ message.displayedContent || message.content }}</div>
+                        <button
+                            id="export-btn"
+                            v-if="message.showExportButton"
+                            @click="exportToPDF"
+                            class="export-button"
+                        >
+                            🤖 Exporter en PDF
+                        </button>
+                    </div>
+                    <div v-else class="default-content">
+                        {{ message.displayedContent || message.content }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicateur de frappe -->
+        <div v-if="isTyping" class="message message-typing">
+            <div class="avatar avatar-assistant">
+                {{ typingAvatar }}
+            </div>
+            <div class="message-content">
+                <div class="message-bubble bubble-typing">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="typing-text">{{ typingText }}</span>
+                </div>
+            </div>
+        </div>
+        </div> <!-- Fin du div v-if="isAuthenticated" -->
+    </div>
+</div>
+
+<!-- Zone de saisie fixe en bas -->
+<div v-if="isAuthenticated" class="chat-input-container">
+    <form @submit.prevent="submitQuestion" class="chat-input-form">
+        <div class="input-wrapper">
+            <textarea
+                v-model="question"
+                :placeholder="inputPlaceholder"
+                class="chat-input"
+                rows="1"
+                :disabled="isProcessing || isInputDisabled"
+                @keydown.enter.prevent="handleEnterKey"
+                ref="messageInput"
+            ></textarea>
+            <button
+                type="submit"
+                class="send-btn"
+                :disabled="isProcessing || !question.trim() || isInputDisabled"
+            >
+                <span v-if="isProcessing">⏳</span>
+                <span v-else>
+                    <img src="img/send_icon.png" alt="Envoyer" style="width: 40px; height: 40px; vertical-align: middle;">
+                </span>
+            </button>
+        </div>
+    </form>
+</div>

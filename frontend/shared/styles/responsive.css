@@ -1,0 +1,124 @@
+/* === STYLES RESPONSIFS === */
+
+/* Mobile */
+@media (max-width: 768px) {
+    .chat-messages {
+        padding: 1rem;
+    }
+
+    .chat-header {
+        padding: 1rem;
+    }
+
+    .chat-input-container {
+        padding: 1rem;
+    }
+
+    .message-content {
+        max-width: 85%;
+    }
+
+    .header-content h1 {
+        font-size: 1.25rem;
+    }
+
+    .header-content p {
+        font-size: 0.8rem;
+    }
+
+    .avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+
+    .message-bubble {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .welcome-message {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .auth-container {
+        width: 95vw;
+        padding: 1.5rem;
+    }
+
+    .auth-logo {
+        width: 100px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .chat-messages {
+        padding: 1.5rem;
+    }
+
+    .message-content {
+        max-width: 80%;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    .chat-messages {
+        padding: 2rem;
+    }
+
+    .message-content {
+        max-width: 70%;
+    }
+}
+
+/* Mode sombre */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1a202c;
+        color: #e2e8f0;
+    }
+
+    .chat-header {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    }
+
+    .welcome-message,
+    .bubble-assistant,
+    .bubble-status {
+        background: #2d3748;
+        color: #e2e8f0;
+        border-color: #4a5568;
+    }
+
+    .chat-input-container {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+
+    .input-wrapper {
+        background: #4a5568;
+        border-color: #718096;
+    }
+
+    .chat-input {
+        color: #e2e8f0;
+    }
+
+    .chat-input::placeholder {
+        color: #a0aec0;
+    }
+
+    .auth-container {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+
+    .auth-input {
+        background: #4a5568;
+        color: #e2e8f0;
+        border-color: #718096;
+    }
+}

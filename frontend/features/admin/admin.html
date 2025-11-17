@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - MIBS</title>
+    <link rel="stylesheet" href="../../shared/styles/base.css">
+    <link rel="stylesheet" href="../../shared/components/alert.css">
+    <link rel="stylesheet" href="../auth/auth.css">
+    <link rel="stylesheet" href="../settings/settings.css">
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+<body>
+    <div id="admin-app">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>
+                        <img src="../../img/white_logo.png" alt="Logo MIBS" style="height: 1.2em; vertical-align: middle;">
+                        Admin Panel
+                    </h1>
+                </div>
+                <div class="header-right">
+                    <button @click="goBackToChat" class="back-button">← Retour au Chat</button>
+                    <div class="profile-menu">
+                        <div class="profile-avatar" @click="toggleProfileDropdown">
+                            <span>👤</span>
+                        </div>
+                        <div class="profile-dropdown" :class="{ show: showProfileDropdown }">
+                            <div class="dropdown-header">
+                                <div class="dropdown-name">{{ user && user.email ? user.email : 'user@example.com' }}</div>
+                            </div>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-item" @click="openSettings">
+                                    ⚙️ Paramètres
+                                </div>
+                                <div class="dropdown-item danger" @click="logout">
+                                    🚪 Déconnexion
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Loading State -->
+            <div v-if="isLoading" class="loading-container">
+                <div class="spinner-large"></div>
+                <p>Chargement des données...</p>
+            </div>
+
+            <!-- Error State -->
+            <div v-else-if="error" class="error-container">
+                <div class="error-icon">⚠️</div>
+                <h2>Erreur</h2>
+                <p>{{ error }}</p>
+                <button @click="loadUsers" class="retry-button">Réessayer</button>
+            </div>
+
+            <!-- Content -->
+            <div v-else class="admin-content">
+
+                <!-- Tabs -->
+                <div class="tabs stat-grid">
+                    <button
+                        class="tab"
+                        :class="{ active: activeTab === 'pending' }"
+                        @click="activeTab = 'pending'"
+                    >
+                        <div class="border-container">
+                            <div class="border-style">
+                                <div class="stat-card">
+                                    <div class="stat-icon">⏳</div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">En attente</div>
+                                        <div class="stat-value">{{ pendingUsers.length }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button
+                        class="tab"
+                        :class="{ active: activeTab === 'validated' }"
+                        @click="activeTab = 'validated'"
+                    >
+                        <div class="border-container">
+                            <div class="border-style">
+                                <div class="stat-card">
+                                    <div class="stat-icon">✅</div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">Validés</div>
+                                        <div class="stat-value">{{ validatedUsers.length }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button
+                        class="tab"
+                        :class="{ active: activeTab === 'all' }"
+                        @click="activeTab = 'all'"
+                    >
+                        <div class="border-container">
+                            <div class="border-style">
+                                <div class="stat-card">
+                                    <div class="stat-icon">👥</div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">Total</div>
+                                        <div class="stat-value">{{ allUsers.length }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="border-container">
+                    <div class="border-style">
+                        <!-- Users List -->
+                        <div class="users-container">
+                            <!-- Pending Users -->
+                            <div v-if="activeTab === 'pending'" class="users-list">
+                                <div v-if="pendingUsers.length === 0" class="empty-state">
+                                    <div class="empty-icon">📭</div>
+                                    <h3>Aucun utilisateur en attente</h3>
+                                    <p>Tous les utilisateurs ont été traités</p>
+                                </div>
+                                <div
+                                    v-for="user in pendingUsers"
+                                    :key="user.id"
+                                    class="user-card pending"
+                                >
+                                    <div class="user-info">
+                                        <div class="user-avatar">👤</div>
+                                        <div class="user-details">
+                                            <div class="user-email">{{ user.email }}</div>
+                                            <div class="user-meta">
+                                                <span class="user-badge pending-badge">En attente</span>
+                                                <span class="user-date">{{ formatDate(user.created_at) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-actions">
+                                        <button
+                                            @click="validateUser(user.id)"
+                                            class="action-button validate-button"
+                                            :disabled="processingUsers.includes(user.id)"
+                                        >
+                                            <span v-if="processingUsers.includes(user.id)" class="spinner-small"></span>
+                                            <span v-else>✓ Accepter</span>
+                                        </button>
+                                        <button
+                                            @click="deleteUser(user.id, user.email)"
+                                            class="action-button delete-button"
+                                            :disabled="processingUsers.includes(user.id)"
+                                        >
+                                            <span v-if="processingUsers.includes(user.id)" class="spinner-small"></span>
+                                            <span v-else>✗ Refuser</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Validated Users -->
+                            <div v-if="activeTab === 'validated'" class="users-list">
+                                <div v-if="validatedUsers.length === 0" class="empty-state">
+                                    <div class="empty-icon">📭</div>
+                                    <h3>Aucun utilisateur validé</h3>
+                                    <p>Les utilisateurs validés apparaîtront ici</p>
+                                </div>
+                                <div
+                                    v-for="user in validatedUsers"
+                                    :key="user.id"
+                                    class="user-card validated"
+                                >
+                                    <div class="user-info">
+                                        <div class="user-avatar">👤</div>
+                                        <div class="user-details">
+                                            <div class="user-email">{{ user.email }}</div>
+                                            <div class="user-meta">
+                                                <span class="user-badge validated-badge">Validé</span>
+                                                <span class="user-date">{{ formatDate(user.created_at) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-actions">
+                                        <button
+                                            @click="deleteUser(user.id, user.email)"
+                                            class="action-button delete-button"
+                                            :disabled="processingUsers.includes(user.id)"
+                                        >
+                                            <span v-if="processingUsers.includes(user.id)" class="spinner-small"></span>
+                                            <span v-else>🗑️ Supprimer</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- All Users -->
+                            <div v-if="activeTab === 'all'" class="users-list">
+                                <div v-if="allUsers.length === 0" class="empty-state">
+                                    <div class="empty-icon">📭</div>
+                                    <h3>Aucun utilisateur</h3>
+                                    <p>La liste des utilisateurs est vide</p>
+                                </div>
+                                <div
+                                    v-for="user in allUsers"
+                                    :key="user.id"
+                                    class="user-card"
+                                    :class="{ 'pending': user.role === 0, 'validated': user.role === 1, 'admin': user.role === 2 }"
+                                >
+                                    <div class="user-info">
+                                        <div class="user-avatar">{{ user.role === 2 ? '👑' : '👤' }}</div>
+                                        <div class="user-details">
+                                            <div class="user-email">{{ user.email }}</div>
+                                            <div class="user-meta">
+                                                <span
+                                                    class="user-badge"
+                                                    :class="{
+                                                        'pending-badge': user.role === 0,
+                                                        'validated-badge': user.role === 1,
+                                                        'admin-badge': user.role === 2
+                                                    }"
+                                                >
+                                                    {{ user.role_name }}
+                                                </span>
+                                                <span class="user-date">{{ formatDate(user.created_at) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-actions" v-if="user.role !== 2">
+                                        <button
+                                            v-if="user.role === 0"
+                                            @click="validateUser(user.id)"
+                                            class="action-button validate-button"
+                                            :disabled="processingUsers.includes(user.id)"
+                                        >
+                                            <span v-if="processingUsers.includes(user.id)" class="spinner-small"></span>
+                                            <span v-else>✓ Accepter</span>
+                                        </button>
+                                        <button
+                                            @click="deleteUser(user.id, user.email)"
+                                            class="action-button delete-button"
+                                            :disabled="processingUsers.includes(user.id)"
+                                        >
+                                            <span v-if="processingUsers.includes(user.id)" class="spinner-small"></span>
+                                            <span v-else>🗑️ Supprimer</span>
+                                        </button>
+                                    </div>
+                                    <div class="user-actions" v-else>
+                                        <span class="protected-label">🔒 Protégé</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Settings Modal (injecté depuis settings.html) -->
+        <div id="settings-placeholder"></div>
+    </div>
+
+    <!-- Charger Alert avant admin.js pour qu'il soit disponible -->
+    <script src="../../shared/components/alert.js"></script>
+    <script src="admin.js?v=6"></script>
+</body>
+</html>

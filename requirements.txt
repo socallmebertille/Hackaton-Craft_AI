@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+requests
+mistralai
+craft-ai-sdk
+pydantic
+httpx
+python-multipart

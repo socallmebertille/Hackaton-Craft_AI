@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique de confidentialité - MIBS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1a202c;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .header img {
+            width: 150px;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .last-updated {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        h2 {
+            color: #2d3748;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: #4a5568;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        strong {
+            color: #1a202c;
+        }
+
+        .highlight-box {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: rgba(237, 137, 54, 0.1);
+            border-left: 4px solid #ed8936;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+            margin-top: 2rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Politique de confidentialité</h1>
+            <p class="last-updated">Dernière mise à jour : 23 octobre 2025</p>
+        </div>
+
+        <div class="highlight-box">
+            <p><strong>En bref :</strong> MIBS respecte votre vie privée. Nous ne conservons pas vos conversations et collectons uniquement les données strictement nécessaires à l'authentification.</p>
+        </div>
+
+        <h2>1. Responsable du traitement</h2>
+        <p>MIBS (Mistral Intelligence Based System) est responsable du traitement de vos données personnelles conformément au Règlement Général sur la Protection des Données (RGPD).</p>
+
+        <h2>2. Données collectées</h2>
+        <h3>2.1. Données d'authentification</h3>
+        <p>Lors de votre inscription, nous collectons :</p>
+        <ul>
+            <li><strong>Adresse e-mail :</strong> utilisée pour l'identification et la connexion à votre compte</li>
+            <li><strong>Mot de passe :</strong> stocké de manière chiffrée (bcrypt) pour sécuriser votre compte</li>
+            <li><strong>Photo de profil (optionnelle) :</strong> URL d'une image que vous choisissez</li>
+            <li><strong>Date de création du compte</strong></li>
+            <li><strong>Date de consentement :</strong> preuve de votre acceptation des CGU et de cette politique</li>
+        </ul>
+
+        <h3>2.2. Politique de non-conservation des conversations</h3>
+        <div class="warning-box">
+            <p><strong>Important :</strong> Les échanges entre vous et l'assistant juridique sont <strong>temporaires</strong> et <strong>supprimés automatiquement</strong> à la fermeture de votre session.</p>
+            <p><strong>Aucune donnée de conversation n'est conservée par la plateforme.</strong></p>
+        </div>
+
+        <p>Nous garantissons techniquement cette non-conservation par :</p>
+        <ul>
+            <li>Aucun stockage en base de données des échanges</li>
+            <li>Suppression automatique des données temporaires en mémoire</li>
+            <li>Aucune journalisation (logs) du contenu des conversations</li>
+            <li>Purge automatique du cache à la fin de session</li>
+        </ul>
+
+        <h2>3. Finalités du traitement</h2>
+        <p>Vos données personnelles sont collectées pour les finalités suivantes :</p>
+        <ul>
+            <li><strong>Gestion de votre compte :</strong> authentification, sécurisation de l'accès</li>
+            <li><strong>Validation des utilisateurs :</strong> processus d'approbation par les administrateurs</li>
+            <li><strong>Conformité RGPD :</strong> traçabilité du consentement</li>
+            <li><strong>Communication :</strong> informations relatives au service (facultatif)</li>
+        </ul>
+
+        <h2>4. Base légale du traitement</h2>
+        <p>Le traitement de vos données repose sur :</p>
+        <ul>
+            <li><strong>Votre consentement explicite :</strong> acceptation des CGU et de la politique de confidentialité lors de l'inscription</li>
+            <li><strong>L'exécution du contrat :</strong> fourniture du service d'assistant juridique</li>
+            <li><strong>Obligation légale :</strong> conservation des preuves de consentement (RGPD)</li>
+        </ul>
+
+        <h2>5. Durée de conservation</h2>
+        <ul>
+            <li><strong>Données de compte :</strong> conservées tant que votre compte est actif</li>
+            <li><strong>Conversations :</strong> <strong>0 jour</strong> - suppression immédiate à la fin de session</li>
+            <li><strong>Logs techniques :</strong> maximum 30 jours (hors contenu des conversations)</li>
+            <li><strong>Après suppression du compte :</strong> toutes vos données sont effacées définitivement sous 30 jours</li>
+        </ul>
+
+        <h2>6. Vos droits (RGPD)</h2>
+        <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+
+        <h3>6.1. Droit d'accès</h3>
+        <p>Vous pouvez consulter vos données personnelles depuis l'onglet "Paramètres" de votre compte.</p>
+
+        <h3>6.2. Droit de rectification</h3>
+        <p>Vous pouvez modifier votre photo de profil et votre mot de passe depuis les paramètres.</p>
+
+        <h3>6.3. Droit à l'effacement ("droit à l'oubli")</h3>
+        <p>Vous pouvez supprimer définitivement votre compte depuis l'onglet "Compte" dans les paramètres. Toutes vos données seront effacées conformément au RGPD.</p>
+
+        <h3>6.4. Droit à la portabilité</h3>
+        <p>Vous pouvez exporter vos conversations au format PDF pendant votre session (avant fermeture).</p>
+
+        <h3>6.5. Droit d'opposition</h3>
+        <p>Vous pouvez retirer votre consentement à tout moment en supprimant votre compte.</p>
+
+        <h2>7. Export volontaire des conversations</h2>
+        <div class="highlight-box">
+            <p>Vous pouvez à tout moment <strong>exporter vos conversations au format PDF</strong> pendant votre session.</p>
+            <p>Cette copie locale est <strong>hors de notre responsabilité</strong>. Vous êtes responsable de la sécurité et de l'utilisation de ces fichiers exportés.</p>
+        </div>
+
+        <h2>8. Sécurité des données</h2>
+        <p>Nous mettons en œuvre les mesures de sécurité suivantes :</p>
+        <ul>
+            <li><strong>Chiffrement des mots de passe :</strong> algorithme bcrypt</li>
+            <li><strong>Authentification par JWT :</strong> tokens sécurisés avec expiration</li>
+            <li><strong>HTTPS :</strong> chiffrement des communications</li>
+            <li><strong>Validation administrateur :</strong> contrôle des nouveaux utilisateurs</li>
+            <li><strong>Isolation des données :</strong> accès strictement personnel</li>
+        </ul>
+
+        <h2>9. Partage des données</h2>
+        <p><strong>Nous ne partageons, ne vendons, ni ne louons vos données personnelles à des tiers.</strong></p>
+        <p>Vos données sont uniquement utilisées en interne pour le fonctionnement du service.</p>
+
+        <h2>10. Cookies et technologies similaires</h2>
+        <p>MIBS utilise uniquement :</p>
+        <ul>
+            <li><strong>localStorage :</strong> pour stocker votre token d'authentification (nécessaire au fonctionnement)</li>
+            <li>Aucun cookie de tracking ou de publicité</li>
+        </ul>
+
+        <h2>11. Services tiers</h2>
+        <p>Nous utilisons les services suivants qui peuvent avoir accès à certaines données :</p>
+        <ul>
+            <li><strong>Mistral AI :</strong> traitement des questions juridiques (conversations non conservées)</li>
+            <li><strong>Legifrance API :</strong> recherche de textes législatifs (anonyme)</li>
+        </ul>
+
+        <h2>12. Modifications de la politique</h2>
+        <p>Nous nous réservons le droit de modifier cette politique de confidentialité. En cas de changement majeur, vous serez informé par e-mail.</p>
+
+        <h2>13. Contact</h2>
+        <p>Pour toute question concernant vos données personnelles ou l'exercice de vos droits :</p>
+        <ul>
+            <li><strong>Email :</strong> privacy@mibs-legal.fr</li>
+            <li><strong>Interface :</strong> Paramètres → Compte → Gestion du compte</li>
+        </ul>
+
+        <h2>14. Autorité de contrôle</h2>
+        <p>Vous avez le droit de déposer une réclamation auprès de la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) si vous estimez que vos droits ne sont pas respectés.</p>
+        <p>Site web : <a href="https://www.cnil.fr" target="_blank" style="color: #667eea;">www.cnil.fr</a></p>
+
+        <div style="text-align: center;">
+            <a href="javascript:window.close();" class="back-btn">Fermer</a>
+        </div>
+    </div>
+</body>
+</html>

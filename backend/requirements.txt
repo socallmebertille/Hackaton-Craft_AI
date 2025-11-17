@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+requests
+mistralai
+craft-ai-sdk
+pydantic
+httpx
+python-multipart
+reportlab
+sqlalchemy
+psycopg2-binary
+bcrypt
+email-validator
+pyjwt[crypto]
+python-jose[cryptography]
