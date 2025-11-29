@@ -92,7 +92,7 @@ class LegifranceService:
         else:
             return "CODE_DATE"  # Par défaut
 
-    def search(self, search_params: Dict, with_full_text: bool = False, top_n: int = 5) -> Dict:
+    def search(self, search_params: Dict, with_full_text: bool = False, top_n: int = 5, original_question: str = None, include_jurisprudence: bool = False) -> Dict:
         """
         Recherche des textes juridiques sur Legifrance
 
@@ -101,17 +101,20 @@ class LegifranceService:
                 {
                     "codes": ["Code civil"],
                     "concepts": ["PACS", "dissolution", "rupture"],
-                    "nature_filter": ["CODE"]
+                    "nature_filter": ["CODE"],
+                    "question": "Quelles sont les lois sur la dissolution du PACS ?" (optionnel)
                 }
             with_full_text (bool): Si True, récupère le texte complet des top_n meilleurs articles
             top_n (int): Nombre d'articles dont on veut le texte complet (défaut: 5)
+            original_question (str): Question originale pour le filtrage intelligent (optionnel)
+            include_jurisprudence (bool): Si True, recherche aussi dans les jurisprudences en plus des codes (défaut: False)
 
         Returns:
             Dict: {
                 "results": [
                     {
                         "code_title": "Code civil",
-                        "nature": "code",
+                        "nature": "code",  # ou "jurisprudence"
                         "articles": [
                             {
                                 "article_id": "LEGIARTI...",
@@ -129,15 +132,16 @@ class LegifranceService:
         codes = search_params.get("codes", [])
         concepts = search_params.get("concepts", [])
         nature_filter = search_params.get("nature_filter", ["CODE"])
+        question = search_params.get("question") or original_question  # Récupérer la question
 
-        # Stratégie de fallback : essayer d'abord avec tous les concepts,
-        # puis avec moins de concepts si on ne trouve pas assez d'articles
-        min_articles_wanted = 3
+        # Stratégie de recherche optimisée ADAPTATIVE :
+        # - 1 concept: Recherche simple UN_DES_MOTS
+        # - 2-3 concepts: Tous sont OBLIGATOIRES (ex: "PACS" ET "dissolution" ET "rupture")
+        # - 4+ concepts: Les 2 premiers sont obligatoires, le reste optionnel
+        #    → Exemple: "décès" ET "héritier" ET ("succession" OU "ordre")
+        #    → Équilibre entre précision (pas d'articles hors-sujet) et recall (trouver les bons articles)
 
-        # Tentative 1 : Tous les concepts
-        search_query = " ".join(concepts)
-
-        print(f"[LegifranceService] Recherche: '{search_query}'")
+        print(f"[LegifranceService] Concepts: {concepts}")
         print(f"[LegifranceService] Codes: {codes}")
         print(f"[LegifranceService] Nature: {nature_filter}")
 
@@ -156,16 +160,65 @@ class LegifranceService:
                 "valeurs": codes  # ["Code civil"]
             })
 
+        # Construire les critères de recherche
+        criteres = []
+        search_query = " ".join(concepts) if concepts else ""  # Pour la compatibilité avec le reste du code
+
+        if concepts:
+            if len(concepts) == 1:
+                # Si un seul concept, recherche simple
+                criteres = [{
+                    "typeRecherche": "UN_DES_MOTS",
+                    "valeur": concepts[0],
+                    "operateur": "ET"
+                }]
+                print(f"[LegifranceService] Critère unique: '{concepts[0]}'")
+            elif len(concepts) <= 3:
+                # Avec 2-3 concepts: chaque concept devient un critère obligatoire séparé
+                # Ex: "PACS" ET "dissolution"
+                # Ex: "licenciement" ET "arrêt maladie" ET "inaptitude"
+                for concept in concepts:
+                    criteres.append({
+                        "typeRecherche": "UN_DES_MOTS",
+                        "valeur": concept,
+                        "operateur": "ET"
+                    })
+                concept_list = "' ET '".join(concepts)
+                print(f"[LegifranceService] Stratégie: '{concept_list}' (tous les critères obligatoires)")
+            else:
+                # Avec 4+ concepts: les 2 premiers sont obligatoires, les autres optionnels
+                # Ex: "héritier" ET "succession" ET ("décès" OU "ordre")
+                # Critères obligatoires (2 premiers)
+                for concept in concepts[:2]:
+                    criteres.append({
+                        "typeRecherche": "UN_DES_MOTS",
+                        "valeur": concept,
+                        "operateur": "ET"
+                    })
+
+                # Critères optionnels (reste)
+                optional_concepts = " ".join(concepts[2:])
+                criteres.append({
+                    "typeRecherche": "UN_DES_MOTS",
+                    "valeur": optional_concepts,
+                    "operateur": "ET"
+                })
+
+                print(f"[LegifranceService] Stratégie: '{concepts[0]}' ET '{concepts[1]}' ET (au moins un de: {concepts[2:]})")
+        else:
+            # Fallback si pas de concepts
+            criteres = [{
+                "typeRecherche": "UN_DES_MOTS",
+                "valeur": "",
+                "operateur": "ET"
+            }]
+
         payload = {
             "fond": fond,
             "recherche": {
                 "champs": [{
                     "typeChamp": "ARTICLE",  # Recherche dans les articles
-                    "criteres": [{
-                        "typeRecherche": "UN_DES_MOTS",  # Au moins un des mots
-                        "valeur": search_query,
-                        "operateur": "ET"
-                    }],
+                    "criteres": criteres,
                     "operateur": "ET"
                 }],
                 "filtres": filtres,
@@ -258,24 +311,29 @@ class LegifranceService:
             # Convertir le dict en liste d'articles uniques
             unique_articles = list(articles_by_num.values())
 
-            print(f"[LegifranceService] Articles uniques trouvés: {len(unique_articles)}")
+            print(f"[LegifranceService] Articles bruts trouvés (avant filtrage): {len(unique_articles)}")
 
-            # Fallback : Si pas assez d'articles et qu'on a plus de 2 concepts, relancer avec moins de concepts
-            if len(unique_articles) < min_articles_wanted and len(concepts) > 2:
-                print(f"[LegifranceService] ⚠️ Pas assez d'articles ({len(unique_articles)} < {min_articles_wanted})")
-                print(f"[LegifranceService] 🔄 Nouvelle recherche avec les 2 premiers concepts seulement...")
+            # ÉTAPE DE FILTRAGE INTELLIGENT avec Mistral
+            # Si on a une question et des articles, filtrer pour ne garder que les pertinents
+            # Toujours filtrer dès qu'on a au moins 1 article
+            if question and unique_articles and len(unique_articles) >= 1:
+                print(f"\n[LegifranceService] 🧠 Filtrage intelligent avec Mistral...")
+                from services.mistral_service import MistralService
 
-                # Relancer la recherche avec seulement les 2 premiers concepts (les plus pertinents)
-                fallback_search_params = {
-                    "codes": codes,
-                    "concepts": concepts[:2],  # Seulement les 2 premiers
-                    "nature_filter": nature_filter
-                }
+                mistral = MistralService()
+                filtered_articles = mistral.filter_relevant_articles(
+                    question=question,
+                    articles=unique_articles,
+                    concepts=concepts
+                )
 
-                # Appel récursif avec concepts réduits
-                return self.search(fallback_search_params, with_full_text=with_full_text, top_n=top_n)
+                if filtered_articles:
+                    unique_articles = filtered_articles
+                    print(f"[LegifranceService] ✅ Articles après filtrage: {len(unique_articles)}")
+                else:
+                    print(f"[LegifranceService] ⚠️ Aucun article pertinent trouvé, conservation de tous les articles")
 
-            # Créer un seul résultat groupé avec tous les articles uniques
+            # Créer un seul résultat groupé avec tous les articles (filtrés si applicable)
             formatted_results = [{
                 "code_title": code_title,
                 "nature": "code",
@@ -314,6 +372,28 @@ class LegifranceService:
                     else:
                         print(f"[LegifranceService] ⚠️ Échec consultation {article_id}: {full_article.get('error')}")
 
+            # Si demandé, rechercher aussi dans les jurisprudences
+            if include_jurisprudence:
+                print(f"\n[LegifranceService] 📚 Recherche complémentaire dans les JURISPRUDENCES...")
+
+                try:
+                    jurisprudence_results = self._search_jurisprudence(
+                        search_query=search_query,
+                        concepts=concepts,
+                        question=question,
+                        max_results=10  # Analyser 10 jurisprudences pour mieux filtrer
+                    )
+
+                    if jurisprudence_results:
+                        print(f"[LegifranceService] ✅ {len(jurisprudence_results)} jurisprudences ajoutées")
+                        formatted_results.extend(jurisprudence_results)
+                    else:
+                        print(f"[LegifranceService] Aucune jurisprudence pertinente trouvée")
+
+                except Exception as e:
+                    print(f"[LegifranceService] ⚠️ Erreur recherche jurisprudence: {e}")
+                    # Continuer même si la recherche de jurisprudence échoue
+
             return {
                 "results": formatted_results,
                 "total": total,
@@ -341,6 +421,133 @@ class LegifranceService:
                 "query": search_query,
                 "error": str(e)
             }
+
+    def _search_jurisprudence(self, search_query: str, concepts: list, question: str = None, max_results: int = 3) -> list:
+        """
+        Recherche dans les jurisprudences (décisions de justice)
+
+        Args:
+            search_query (str): Requête de recherche
+            concepts (list): Liste des concepts juridiques
+            question (str): Question originale pour filtrage
+            max_results (int): Nombre max de jurisprudences à retourner
+
+        Returns:
+            list: Liste de résultats de jurisprudence au format standardisé
+        """
+        print(f"[LegifranceService] Recherche jurisprudence: '{search_query}'")
+
+        try:
+            # Obtenir le token
+            token = self._get_access_token()
+
+            # Headers
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
+
+            url = f"{self.api_url}/search"
+
+            # Payload pour recherche dans les jurisprudences
+            # Format selon documentation officielle Légifrance
+            payload = {
+                "fond": "JURI",  # Fond jurisprudence judiciaire
+                "recherche": {
+                    "champs": [{
+                        "criteres": [{
+                            "valeur": search_query,
+                            "proximite": 2,
+                            "operateur": "ET",
+                            "typeRecherche": "UN_DES_MOTS"
+                        }],
+                        "operateur": "ET",
+                        "typeChamp": "ALL"
+                    }],
+                    "fromAdvancedRecherche": False,
+                    "pageSize": 20,  # Limiter le nombre de résultats
+                    "operateur": "ET",
+                    "typePagination": "DEFAUT",
+                    "pageNumber": 1,
+                    "sort": "PERTINENCE",
+                    "secondSort": "DATE_DESC"
+                }
+            }
+
+            print(f"[LegifranceService] Appel API JURI (jurisprudence judiciaire)")
+
+            response = requests.post(url, json=payload, headers=headers, timeout=30)
+            response.raise_for_status()
+
+            data = response.json()
+            results = data.get("results", [])
+            total = data.get("totalResultNumber", 0)
+
+            print(f"[LegifranceService] {total} jurisprudences trouvées")
+
+            # Parser les jurisprudences
+            jurisprudences = []
+
+            for result in results[:max_results]:
+                # Extraire les informations de la décision
+                decision_id = result.get("id", "")
+                titles = result.get("titles", [])
+                decision_title = titles[0].get("title", "Décision") if titles else "Décision"
+
+                # Extraire les extraits pertinents
+                sections = result.get("sections", [])
+                extracts_text = []
+
+                for section in sections[:2]:  # Limiter aux 2 premières sections
+                    for extract in section.get("extracts", [])[:2]:  # 2 extraits par section
+                        values = extract.get("values", [])
+                        if values:
+                            extracts_text.append(" ".join(values)[:200])
+
+                text_preview = " [...] ".join(extracts_text) if extracts_text else ""
+
+                # Ajouter la jurisprudence
+                jurisprudences.append({
+                    "article_id": decision_id,
+                    "article_num": decision_title,
+                    "text_preview": text_preview,
+                    "section_title": "Jurisprudence",
+                    "date_version": result.get("dateDecision", ""),
+                    "legal_status": "VIGUEUR"
+                })
+
+            # Filtrage intelligent avec Mistral si on a une question
+            if question and jurisprudences:
+                print(f"[LegifranceService] 🧠 Filtrage intelligent des jurisprudences...")
+                from services.mistral_service import MistralService
+
+                mistral = MistralService()
+                filtered_juris = mistral.filter_relevant_articles(
+                    question=question,
+                    articles=jurisprudences,
+                    concepts=concepts
+                )
+
+                if filtered_juris:
+                    jurisprudences = filtered_juris
+                    print(f"[LegifranceService] ✅ Jurisprudences après filtrage: {len(jurisprudences)}")
+
+            # Retourner au format standardisé
+            if jurisprudences:
+                return [{
+                    "code_title": "Jurisprudence",
+                    "nature": "jurisprudence",
+                    "date": "",
+                    "etat": "",
+                    "fond": "JURI",
+                    "articles": jurisprudences
+                }]
+
+            return []
+
+        except Exception as e:
+            print(f"[LegifranceService] ⚠️ Erreur recherche jurisprudence: {e}")
+            return []
 
     def consult(self, article_id: str) -> Dict:
         """
