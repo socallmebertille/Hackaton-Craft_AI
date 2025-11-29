@@ -1,11 +1,9 @@
 # Dockerfile de développement pour le backend FastAPI
-# Version simplifiée avec hot-reload activé
-
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Créer utilisateur non-root (UID 1000)
+# Créer utilisateur non-root
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 
 # Copier requirements.txt
@@ -14,10 +12,8 @@ COPY --chown=appuser:appuser requirements.txt .
 # Installer les dépendances
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Le code sera monté via volume en dev, pas besoin de COPY
-
-# Utilisateur non-root
+# Le code sera monté via volume en dev
 USER appuser
 
-# Démarrage dev avec hot-reload - Variables HOST et PORT depuis .env
-CMD uvicorn main:app --host ${HOST:-0.0.0.0} --port ${PORT:-8000} --reload
+# Démarrage avec hot-reload
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

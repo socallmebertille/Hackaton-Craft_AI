@@ -1,82 +1,45 @@
-# Docker Compose - Configuration de DÉVELOPPEMENT
-# Usage: docker-compose -f docker-compose.dev.yml up
+# Docker Compose - Configuration de développement
+# Usage: docker-compose -f docker-compose.dev.yml up --build
 
 services:
-  # Base de données PostgreSQL
-  database:
-    image: postgres:15-alpine
-    container_name: mibs_database_dev
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      # Exposer le port PostgreSQL pour debug (psql, DBeaver, etc.)
-      - "${DB_PORT}:${DB_PORT}"
-    volumes:
-      - postgres_data_dev:/var/lib/postgresql/data
-    networks:
-      - mibs_network_dev
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # Backend FastAPI avec hot-reload
+  # Backend FastAPI
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
-    container_name: mibs_backend_dev
-    env_file:
-      - .env
-    environment:
-      # Override pour Docker (DB host différent en local vs Docker)
-      DB_HOST: database
-      DB_PORT: ${DB_PORT}
-
-      # Mode debug
-      DEBUG: "true"
+    container_name: juridique_ai_backend_dev
+    ports:
+      - "8000:8000"
     volumes:
       # Monter le code source pour hot-reload
       - ./backend:/app:rw
-    ports:
-      # Exposer le port backend pour debug direct
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
-    depends_on:
-      database:
-        condition: service_healthy
+    environment:
+      - ENVIRONMENT=development
+      - PORT=8000
     networks:
-      - mibs_network_dev
+      - juridique_ai_network
 
-  # Nginx - Reverse Proxy + Serveur de fichiers statiques
-  nginx:
+  # Frontend Vite + React
+  frontend:
     build:
-      context: ./nginx
+      context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: mibs_nginx_dev
+    container_name: juridique_ai_frontend_dev
     ports:
-      - "${NGINX_HTTP_PORT}:${NGINX_HTTP_PORT}"
+      - "5173:5173"
     volumes:
-      # Monter les fichiers frontend pour modifications en direct
-      - ./frontend:/var/www/mibs:rw
-
-      # Monter les configs nginx pour modifications en direct
-      - ./nginx/conf.d:/etc/nginx/conf.d:rw
-
-      # Logs
-      - ./logs/nginx:/var/log/nginx
+      # Monter le code source pour hot-reload
+      - ./frontend:/app:rw
+      # Volume node_modules pour éviter les conflits
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
     depends_on:
       - backend
     networks:
-      - mibs_network_dev
+      - juridique_ai_network
 
-# Réseau isolé pour le dev
+# Réseau pour la communication entre services
 networks:
-  mibs_network_dev:
+  juridique_ai_network:
     driver: bridge
-
-volumes:
-  postgres_data_dev:
-    driver: local

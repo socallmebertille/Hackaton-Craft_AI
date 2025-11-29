@@ -1,15 +1,15 @@
-fastapi
-uvicorn[standard]
-requests
-mistralai
-craft-ai-sdk
-pydantic
-httpx
-python-multipart
-reportlab
-sqlalchemy
-psycopg2-binary
-bcrypt
-email-validator
-pyjwt[crypto]
-python-jose[cryptography]
+# Backend FastAPI - Dépendances minimales
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+python-multipart==0.0.6
+
+# Optionnel - À décommenter selon les besoins
+# requests==2.31.0
+# mistralai
+# craft-ai-sdk
+# httpx==0.26.0
+# sqlalchemy==2.0.25
+# psycopg2-binary==2.9.9
+# bcrypt==4.1.2
+# pyjwt[crypto]==2.8.0
