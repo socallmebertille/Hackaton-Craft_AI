@@ -1,0 +1,3 @@
+"""
+Application principale - Juridique AI
+"""

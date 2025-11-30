@@ -15,5 +15,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Le code sera monté via volume en dev
 USER appuser
 
-# Démarrage avec hot-reload
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Démarrage avec hot-reload - nouveau chemin du main
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

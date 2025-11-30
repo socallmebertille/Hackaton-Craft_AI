@@ -1,0 +1,119 @@
+/* Header commun pour toutes les pages */
+.app-header {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.app-header .header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header .logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.app-header .logo:hover {
+  opacity: 0.8;
+}
+
+.app-header .logo-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.app-header .logo h1 {
+  font-size: 1.75rem;
+  color: var(--accent-color);
+  margin: 0;
+  font-weight: 700;
+}
+
+.app-header .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-header .nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.app-header .nav-link:hover {
+  color: var(--text-primary);
+  background: var(--hover-bg);
+}
+
+.app-header .user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-header .user-name {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.app-header .btn-secondary {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.app-header .btn-secondary:hover {
+  background: var(--hover-bg);
+  border-color: var(--text-secondary);
+}
+
+.app-header .auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-header .btn-primary {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  background: var(--accent-color);
+  color: white;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.app-header .btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
