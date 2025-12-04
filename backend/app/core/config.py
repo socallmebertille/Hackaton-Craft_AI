@@ -70,6 +70,23 @@ class Settings(BaseSettings):
     ADMIN_NOM: Optional[str] = "System"
     ADMIN_ENTREPRISE: Optional[str] = "Juridique AI"
 
+    # CraftAI Pipelines
+    PIPELINE_0_ENDPOINT_URL: Optional[str] = None  # Analyse d'intention
+    PIPELINE_0_ENDPOINT_TOKEN: Optional[str] = None
+
+    PIPELINE_1_ENDPOINT_URL: Optional[str] = None  # Extraction Légifrance
+    PIPELINE_1_ENDPOINT_TOKEN: Optional[str] = None
+
+    # TODO: Ajouter les autres pipelines
+    # PIPELINE_2_ENDPOINT_URL: Optional[str] = None  # Génération réponse
+    # PIPELINE_2_ENDPOINT_TOKEN: Optional[str] = None
+
+    # Légifrance API
+    MIBS_LEGIFRANCE_CLIENT_ID: Optional[str] = None
+    MIBS_LEGIFRANCE_CLIENT_SECRET: Optional[str] = None
+    MIBS_LEGIFRANCE_TOKEN_URL: Optional[str] = None
+    MIBS_LEGIFRANCE_API_URL: Optional[str] = None
+
     class Config:
         env_file = ".env"
         case_sensitive = True

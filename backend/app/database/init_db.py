@@ -18,6 +18,15 @@ def create_admin_user():
         print("⚠️  Variables ADMIN_EMAIL et ADMIN_PASSWORD non configurées - Aucun admin créé")
         return
 
+    # Vérifier la longueur du mot de passe admin (limite bcrypt : 72 octets)
+    password_bytes = settings.ADMIN_PASSWORD.encode('utf-8')
+    if len(password_bytes) > 72:
+        print(f"❌ Erreur: Mot de passe ADMIN_PASSWORD trop long")
+        print(f"   Longueur actuelle: {len(password_bytes)} octets")
+        print(f"   Maximum autorisé: 72 octets (limitation bcrypt)")
+        print(f"   Veuillez raccourcir le mot de passe dans le fichier .env")
+        return
+
     db = SessionLocal()
     try:
         # Vérifier si l'admin existe déjà

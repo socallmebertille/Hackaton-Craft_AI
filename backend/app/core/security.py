@@ -39,7 +39,18 @@ def get_password_hash(password: str) -> str:
 
     Returns:
         str: Mot de passe hashé
+
+    Raises:
+        HTTPException: Si le mot de passe dépasse 72 octets
     """
+    # Vérification de sécurité : bcrypt limite à 72 octets
+    password_bytes = password.encode('utf-8')
+    if len(password_bytes) > 72:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Le mot de passe est trop long ({len(password_bytes)} octets, maximum 72 octets)"
+        )
+
     return pwd_context.hash(password)
 
 
@@ -268,10 +279,12 @@ def validate_password_strength(password: str) -> None:
             detail="Le mot de passe doit contenir au moins 8 caractères"
         )
 
-    if len(password) > 128:
+    # Vérifier la limite de bcrypt (72 octets maximum)
+    password_bytes = password.encode('utf-8')
+    if len(password_bytes) > 72:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Le mot de passe est trop long"
+            detail=f"Le mot de passe est trop long ({len(password_bytes)} octets, maximum 72 octets pour bcrypt)"
         )
 
     # Vérifier la complexité
