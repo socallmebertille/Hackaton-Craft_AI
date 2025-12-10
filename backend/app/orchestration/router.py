@@ -73,7 +73,7 @@ async def send_message(
         chat_id=chat.id,
         numero=next_numero,
         role="user",
-        content=request.content
+        content={"message": request.content}  # Stocker en JSON
     )
     db.add(user_message)
     db.commit()
@@ -96,32 +96,87 @@ async def send_message(
                 end_conversation=False
             )
 
-        # Sauvegarder la réponse de l'assistant
-        assistant_message = DBMessage(
-            chat_id=chat.id,
-            numero=next_numero + 1,
-            role="assistant",
-            content=result.get("response", "")
-        )
-        db.add(assistant_message)
-        db.commit()
-        db.refresh(assistant_message)
+        # Gérer les messages multiples pour les débats
+        if result.get("debate_messages"):
+            # Débat : créer plusieurs messages
+            current_numero = next_numero + 1
+            first_message_id = None
 
-        # Mettre à jour le titre du chat si c'est le premier message
-        if len(chat.messages) == 2:  # user + assistant
-            # Générer un titre basé sur le premier message
-            chat.titre = request.content[:50] + ("..." if len(request.content) > 50 else "")
+            for message_text in result["debate_messages"]:
+                assistant_content = {
+                    "response": message_text,
+                    "intention": result.get("intention"),
+                    "confidence": result.get("confidence")
+                }
+
+                assistant_message = DBMessage(
+                    chat_id=chat.id,
+                    numero=current_numero,
+                    role="assistant",
+                    content=assistant_content
+                )
+                db.add(assistant_message)
+                current_numero += 1
+
+                if first_message_id is None:
+                    db.flush()  # Pour obtenir l'ID
+                    first_message_id = str(assistant_message.id)
+
+            # Mettre à jour le titre du chat si c'est le premier message
+            if next_numero == 1:
+                chat.titre = request.content[:50] + ("..." if len(request.content) > 50 else "")
+
             db.commit()
 
-        return MessageResponse(
-            success=True,
-            message_id=str(assistant_message.id),
-            response=result.get("response"),
-            intention=result.get("intention"),
-            confidence=result.get("confidence"),
-            reasoning=result.get("reasoning"),
-            end_conversation=result.get("end_conversation", False)
-        )
+            return MessageResponse(
+                success=True,
+                message_id=first_message_id,
+                response=f"{len(result['debate_messages'])} messages de débat envoyés",
+                intention=result.get("intention"),
+                confidence=result.get("confidence"),
+                reasoning=result.get("reasoning"),
+                end_conversation=result.get("end_conversation", False)
+            )
+        else:
+            # Cas normal : un seul message
+            assistant_content = {
+                "response": result.get("response", ""),
+                "intention": result.get("intention"),
+                "confidence": result.get("confidence"),
+                "reasoning": result.get("reasoning")
+            }
+
+            # Ajouter les données spécifiques selon le type de réponse
+            if result.get("debate"):
+                assistant_content["debate"] = result["debate"]
+            if result.get("citations"):
+                assistant_content["citations"] = result["citations"]
+
+            assistant_message = DBMessage(
+                chat_id=chat.id,
+                numero=next_numero + 1,
+                role="assistant",
+                content=assistant_content
+            )
+            db.add(assistant_message)
+
+            # Mettre à jour le titre du chat si c'est le premier message
+            if next_numero == 1:
+                # Générer un titre basé sur le premier message
+                chat.titre = request.content[:50] + ("..." if len(request.content) > 50 else "")
+
+            db.commit()
+            db.refresh(assistant_message)
+
+            return MessageResponse(
+                success=True,
+                message_id=str(assistant_message.id),
+                response=result.get("response"),
+                intention=result.get("intention"),
+                confidence=result.get("confidence"),
+                reasoning=result.get("reasoning"),
+                end_conversation=result.get("end_conversation", False)
+            )
 
     except Exception as e:
         print(f"[Router] Erreur lors du traitement du message: {e}")
@@ -178,7 +233,7 @@ async def get_chat_messages(
 
     messages = db.query(DBMessage).filter(
         DBMessage.chat_id == chat_id
-    ).order_by(DBMessage.created_at.asc()).all()
+    ).order_by(DBMessage.date_creation.asc()).all()
 
     return {
         "success": True,
@@ -186,10 +241,10 @@ async def get_chat_messages(
         "title": chat.titre,
         "messages": [
             {
-                "id": msg.id,
+                "id": str(msg.id),
                 "role": msg.role,
                 "content": msg.content,
-                "created_at": msg.created_at.isoformat()
+                "created_at": msg.date_creation.isoformat()
             }
             for msg in messages
         ]
@@ -206,7 +261,7 @@ async def get_user_chats(
     """
     chats = db.query(Chat).filter(
         Chat.user_id == current_user.id
-    ).order_by(Chat.updated_at.desc()).all()
+    ).order_by(Chat.derniere_utilisation.desc()).all()
 
     return {
         "success": True,
@@ -214,9 +269,9 @@ async def get_user_chats(
             {
                 "id": str(chat.id),
                 "title": chat.titre,
-                "messages_count": chat.messages_count,
-                "created_at": chat.created_at.isoformat(),
-                "updated_at": chat.updated_at.isoformat()
+                "messages_count": len(chat.messages),
+                "created_at": chat.date_creation.isoformat(),
+                "updated_at": chat.derniere_utilisation.isoformat()
             }
             for chat in chats
         ]

@@ -77,9 +77,11 @@ class Settings(BaseSettings):
     PIPELINE_1_ENDPOINT_URL: Optional[str] = None  # Extraction Légifrance
     PIPELINE_1_ENDPOINT_TOKEN: Optional[str] = None
 
-    # TODO: Ajouter les autres pipelines
-    # PIPELINE_2_ENDPOINT_URL: Optional[str] = None  # Génération réponse
-    # PIPELINE_2_ENDPOINT_TOKEN: Optional[str] = None
+    PIPELINE_3_ENDPOINT_URL: Optional[str] = None  # Débat juridique
+    PIPELINE_3_ENDPOINT_TOKEN: Optional[str] = None
+
+    PIPELINE_4_ENDPOINT_URL: Optional[str] = None  # Citations avec explications
+    PIPELINE_4_ENDPOINT_TOKEN: Optional[str] = None
 
     # Légifrance API
     MIBS_LEGIFRANCE_CLIENT_ID: Optional[str] = None

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Header from '../components/layout/Header'
 import LoginModal from '../components/auth/LoginModal'
@@ -8,6 +9,7 @@ import '../styles/Home.css'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 function Home() {
+  const navigate = useNavigate()
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [showRegisterModal, setShowRegisterModal] = useState(false)
   const [user, setUser] = useState(null)
@@ -24,6 +26,8 @@ function Home() {
           headers: { Authorization: `Bearer ${token}` }
         })
         setUser(response.data)
+        // Rediriger vers le chat si l'utilisateur est connecté
+        navigate('/chat')
       } catch (err) {
         // Token invalide, le supprimer
         localStorage.removeItem('jwt_token')
@@ -31,12 +35,12 @@ function Home() {
     }
 
     checkAuth()
-  }, [])
+  }, [navigate])
 
   const handleLoginSuccess = (userData) => {
     setUser(userData)
-    // TODO: Rediriger vers le dashboard
-    // navigate('/dashboard')
+    // Rediriger vers le chat
+    navigate('/chat')
   }
 
   const handleRegisterSuccess = () => {
@@ -53,9 +57,8 @@ function Home() {
 
   const handleStart = () => {
     if (user) {
-      // Rediriger vers le dashboard si connecté
-      // navigate('/dashboard')
-      alert('Dashboard à venir')
+      // Rediriger vers le chat si connecté
+      navigate('/chat')
     } else {
       // Afficher le modal de connexion
       setShowLoginModal(true)

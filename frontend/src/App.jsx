@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
+import Chat from './pages/Chat'
 import AdminDev from './pages/AdminDev'
 import AdminPanel from './pages/AdminPanel'
 import VerifyEmail from './pages/VerifyEmail'
@@ -30,15 +31,12 @@ function App() {
         <main className="main">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/chat" element={<Chat />} />
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/admin/dev" element={<AdminDev />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
           </Routes>
         </main>
-
-        <footer className="footer">
-          <p>MIBS AI v1.0.0 - En développement</p>
-        </footer>
       </div>
     </BrowserRouter>
   )

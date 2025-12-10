@@ -117,3 +117,52 @@
   background: var(--accent-hover);
   transform: translateY(-1px);
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-header .header-content {
+    padding: 0.75rem 1rem;
+  }
+
+  .app-header .logo {
+    gap: 0.5rem;
+  }
+
+  .app-header .logo-img {
+    height: 32px;
+  }
+
+  .app-header .logo h1 {
+    display: none;
+  }
+
+  .app-header .user-name {
+    display: none;
+  }
+
+  .app-header .btn-primary,
+  .app-header .btn-secondary {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .app-header .auth-buttons {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header .header-content {
+    padding: 0.65rem 0.75rem;
+  }
+
+  .app-header .logo h1 {
+    display: none;
+  }
+
+  .app-header .btn-primary,
+  .app-header .btn-secondary {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8rem;
+  }
+}
