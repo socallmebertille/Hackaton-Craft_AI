@@ -1,15 +1,32 @@
+# Backend FastAPI - Dépendances
 fastapi
 uvicorn[standard]
-requests
-mistralai
-craft-ai-sdk
 pydantic
-httpx
+pydantic-settings
 python-multipart
-reportlab
+email-validator
+
+# Database
 sqlalchemy
 psycopg2-binary
-bcrypt
-email-validator
-pyjwt[crypto]
+alembic
+
+# Security
+bcrypt==4.0.1
+passlib[bcrypt]==1.7.4
 python-jose[cryptography]
+pyjwt
+bleach
+
+# Email
+aiosmtplib
+
+# Utilities
+python-dotenv
+
+# AI & ML
+mistralai
+craft-ai-sdk
+
+# HTTP Client
+httpx

@@ -1,0 +1,70 @@
+/* Layout - Structure de la page chat */
+
+.chat-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  z-index: 100;
+}
+
+.chat-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.chat-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Bouton menu mobile - caché par défaut sur desktop */
+.mobile-menu-toggle {
+  display: none;
+}
+
+/* Overlay pour fermer la sidebar sur mobile */
+.sidebar-overlay {
+  display: none;
+}
+
+/* Main chat area */
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  position: relative;
+}
+
+.chat-main:has(.chat-welcome) {
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+.chat-welcome {
+  text-align: center;
+  margin-bottom: 2rem;
+  flex-shrink: 0;
+}
+
+.chat-welcome h2 {
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.chat-main:has(.chat-welcome) .messages-container {
+  display: none;
+}

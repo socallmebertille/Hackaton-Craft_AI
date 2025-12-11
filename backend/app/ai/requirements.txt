@@ -1,0 +1,5 @@
+# Requirements pour les pipelines CraftAI
+# Ce fichier sera uploadé avec les pipelines
+
+mistralai==1.0.0
+requests==2.31.0
