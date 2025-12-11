@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copier requirements.txt
-COPY ../requirements.txt .
+COPY requirements.txt .
 
 # Installer les dépendances Python
 RUN pip install --no-cache-dir --user -r requirements.txt
@@ -37,5 +37,5 @@ COPY --chown=appuser:appuser . .
 # Utilisateur non-root
 USER appuser
 
-# Démarrage production - Les variables HOST, PORT et WORKERS seront définies via .env
-CMD uvicorn main:app --host ${HOST:-0.0.0.0} --port ${PORT:-8000} --workers ${WORKERS:-4}
+# Démarrage production
+CMD uvicorn app.main:app --host ${HOST:-0.0.0.0} --port ${PORT:-8000}

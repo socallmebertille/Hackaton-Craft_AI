@@ -1,0 +1,72 @@
+# Docker Compose - Configuration de production
+# Usage: docker-compose up -d --build
+
+services:
+  # Base de données PostgreSQL
+  database:
+    image: postgres:15-alpine
+    container_name: juridique_ai_db
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - juridique_ai_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend FastAPI
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: juridique_ai_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST=database
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - juridique_ai_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend React + Nginx
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: juridique_ai_frontend
+    ports:
+      - "80:80"
+    volumes:
+      # Monter la configuration nginx depuis l'hôte (à créer à partir de nginx.conf.example)
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    networks:
+      - juridique_ai_network
+    restart: unless-stopped
+
+# Réseau pour la communication entre services
+networks:
+  juridique_ai_network:
+    driver: bridge
+
+# Volumes persistants
+volumes:
+  postgres_data:
+    driver: local
