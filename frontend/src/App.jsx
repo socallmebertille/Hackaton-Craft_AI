@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
-import Chat from './pages/Chat'
+import Chat from './pages/Chat/Chat'
 import AdminDev from './pages/AdminDev'
 import AdminPanel from './pages/AdminPanel'
 import VerifyEmail from './pages/VerifyEmail'

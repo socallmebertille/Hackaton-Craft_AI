@@ -3,7 +3,7 @@ Router API pour l'orchestration des messages IA
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import Optional
@@ -11,7 +11,8 @@ from typing import Optional
 from app.database.base import get_db
 from app.database.models import User, Chat, Message as DBMessage
 from app.auth.dependencies import get_current_active_user
-from app.orchestration.orchestrator import AIOrchestrator
+from app.chat.orchestrator import AIOrchestrator
+from app.core.sanitizer import sanitize_message
 
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
@@ -20,7 +21,13 @@ router = APIRouter(prefix="/api/chat", tags=["chat"])
 class MessageRequest(BaseModel):
     """Modèle de requête pour envoyer un message"""
     chat_id: str  # UUID au format string
-    content: str
+    content: str = Field(..., min_length=1, max_length=10000, description="Contenu du message")
+
+    @field_validator('content')
+    @classmethod
+    def sanitize_content(cls, v: str) -> str:
+        """Sanitize message content to prevent XSS"""
+        return sanitize_message(v)
 
 
 class MessageResponse(BaseModel):
@@ -60,6 +67,18 @@ async def send_message(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Chat non trouvé"
+        )
+
+    # Vérifier qu'aucun message utilisateur n'existe déjà (un seul message par chat autorisé)
+    existing_user_message = db.query(DBMessage).filter(
+        DBMessage.chat_id == chat.id,
+        DBMessage.role == "user"
+    ).first()
+
+    if existing_user_message:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Un message a déjà été envoyé dans ce chat. Veuillez créer un nouveau chat."
         )
 
     # Calculer le prochain numéro de message

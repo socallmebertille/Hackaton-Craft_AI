@@ -1,0 +1,7 @@
+/* Admin Panel Styles - Import de tous les modules */
+
+@import './layout.css';
+@import './stats.css';
+@import './users.css';
+@import './modal.css';
+@import './responsive.css';

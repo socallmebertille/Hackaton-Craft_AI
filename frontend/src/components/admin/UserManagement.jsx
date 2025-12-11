@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import UserTable from './UserTable'
 import ModeratorModal from './ModeratorModal'
-import '../../styles/AdminPanel.css'
+import '../../styles/admin/index.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 

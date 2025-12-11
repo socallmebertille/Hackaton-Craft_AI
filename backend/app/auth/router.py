@@ -91,39 +91,6 @@ async def get_current_user_info(
     return current_user
 
 
-@router.get("/account-status")
-async def check_account_status(
-    email: str,
-    db: Session = Depends(get_db)
-):
-    """
-    Vérifie le statut d'activation d'un compte par email
-
-    - **email**: Email de l'utilisateur
-
-    Retourne l'état du compte (is_active, email_verified).
-    Utile pour informer l'utilisateur avant qu'il ne tente de se connecter.
-    """
-    user = db.query(User).filter(User.email == email).first()
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Utilisateur introuvable"
-        )
-
-    return {
-        "email": user.email,
-        "is_active": user.is_active,
-        "email_verified": user.email_verified,
-        "status_message": (
-            "Compte actif" if user.is_active and user.email_verified
-            else "Email non vérifié" if not user.email_verified
-            else "En attente de validation administrateur"
-        )
-    }
-
-
 @router.delete("/account")
 async def delete_account(
     current_user: User = Depends(dependencies.get_current_user),

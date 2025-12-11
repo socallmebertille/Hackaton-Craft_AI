@@ -16,6 +16,7 @@ bcrypt==4.0.1
 passlib[bcrypt]==1.7.4
 python-jose[cryptography]
 pyjwt
+bleach
 
 # Email
 aiosmtplib
@@ -29,6 +30,3 @@ craft-ai-sdk
 
 # HTTP Client
 httpx
-
-# External APIs (À décommenter selon les besoins)
-# requests==2.31.0

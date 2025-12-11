@@ -1,0 +1,8 @@
+/* Chat Styles - Import de tous les modules */
+
+@import './layout.css';
+@import './sidebar.css';
+@import './messages.css';
+@import './input.css';
+@import './pdf.css';
+@import './responsive.css';

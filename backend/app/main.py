@@ -9,8 +9,8 @@ from app.core.config import settings
 from app.database.base import engine
 from app.database.models import Base
 from app.auth.router import router as auth_router
-from app.auth.admin_router import router as admin_router
-from app.orchestration.router import router as orchestration_router
+from app.admin.router import router as admin_router
+from app.chat.router import router as chat_router
 
 
 # Créer l'application FastAPI
@@ -32,7 +32,7 @@ app.add_middleware(
 # Enregistrer les routers
 app.include_router(auth_router)
 app.include_router(admin_router)
-app.include_router(orchestration_router)
+app.include_router(chat_router)
 
 
 @app.on_event("startup")

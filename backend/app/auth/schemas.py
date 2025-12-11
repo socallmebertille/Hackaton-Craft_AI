@@ -3,10 +3,11 @@ Schemas Pydantic pour l'authentification
 Validation des données entrantes/sortantes
 """
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from datetime import datetime
 from typing import Optional
 import uuid
+from app.core.sanitizer import sanitize_text_field, sanitize_email
 
 
 class UserRegister(BaseModel):
@@ -16,6 +17,19 @@ class UserRegister(BaseModel):
     entreprise: str = Field(..., min_length=1, max_length=200, description="Nom de l'entreprise")
     email: EmailStr = Field(..., description="Email de l'utilisateur")
     password: str = Field(..., min_length=8, max_length=100, description="Mot de passe (min 8 caractères)")
+
+    @field_validator('prenom', 'nom', 'entreprise')
+    @classmethod
+    def sanitize_text_fields(cls, v: str, info) -> str:
+        """Sanitize text fields to prevent XSS"""
+        field_name = info.field_name.capitalize()
+        return sanitize_text_field(v, max_length=200, field_name=field_name)
+
+    @field_validator('email')
+    @classmethod
+    def sanitize_email_field(cls, v: str) -> str:
+        """Sanitize email field"""
+        return sanitize_email(v)
 
     class Config:
         json_schema_extra = {

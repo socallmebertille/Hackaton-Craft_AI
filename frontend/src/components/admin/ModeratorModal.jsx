@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import Modal from '../auth/Modal'
-import '../../styles/AdminPanel.css'
+import '../../styles/admin/index.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 

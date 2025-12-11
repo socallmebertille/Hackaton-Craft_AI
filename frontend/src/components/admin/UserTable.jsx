@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import '../../styles/AdminPanel.css'
+import '../../styles/admin/index.css'
 
 function UserTable({ users, currentUser, filter, onAccept, onReject, onDeactivate, onDelete, onMakeModerator, onRemoveModerator }) {
   const [selectedActions, setSelectedActions] = useState({})

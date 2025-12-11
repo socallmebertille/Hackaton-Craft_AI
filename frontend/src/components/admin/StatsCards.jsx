@@ -1,4 +1,4 @@
-import '../../styles/AdminPanel.css'
+import '../../styles/admin/index.css'
 
 function StatsCards({ stats, user }) {
   return (

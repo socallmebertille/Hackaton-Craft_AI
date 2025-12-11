@@ -1,0 +1,237 @@
+/* Responsive - Adaptations mobile et tablette */
+
+@media (max-width: 1024px) {
+  .chat-sidebar {
+    width: 240px;
+  }
+
+  .message {
+    max-width: 85%;
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-container {
+    position: relative;
+    flex: 1;
+    display: flex;
+    overflow: visible;
+    min-height: 0;
+    height: 100%;
+  }
+
+  /* Overlay pour fermer la sidebar */
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 190;
+    backdrop-filter: blur(2px);
+  }
+
+  /* Sidebar en overlay sur mobile */
+  .chat-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .chat-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Bouton pour ouvrir le menu sur mobile */
+  .mobile-menu-toggle {
+    display: block;
+    position: fixed;
+    top: 120px;
+    left: 10px;
+    z-index: 150;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: 1.4rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s;
+  }
+
+  .mobile-menu-toggle:hover {
+    background: var(--hover-bg);
+  }
+
+  .chat-main {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .messages-container {
+    padding: 1rem;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
+  }
+
+  .message {
+    max-width: 95%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .message-content {
+    font-size: 0.9rem;
+  }
+
+  .message-content h1 {
+    font-size: 1.3rem;
+  }
+
+  .message-content h2 {
+    font-size: 1.15rem;
+  }
+
+  .message-content h3 {
+    font-size: 1rem;
+  }
+
+  .message-input-form {
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+
+  .chat-main:has(.chat-welcome) .message-input-form {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .message-input {
+    font-size: 0.9rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .btn-send {
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .send-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .chat-welcome h2 {
+    font-size: 1.5rem;
+  }
+
+  .pdf-popup {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+  }
+
+  .pdf-popup-content {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .btn-new-chat {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .chat-item {
+    padding: 0.65rem;
+  }
+
+  .chat-item-title {
+    font-size: 0.85rem;
+  }
+
+  .chat-item-date {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-sidebar {
+    width: 85vw;
+    max-width: 300px;
+  }
+
+  .message {
+    max-width: 98%;
+    padding: 0.6rem;
+  }
+
+  .message-content {
+    font-size: 0.85rem;
+  }
+
+  .message-content h1 {
+    font-size: 1.2rem;
+  }
+
+  .message-content h2 {
+    font-size: 1.05rem;
+  }
+
+  .message-content h3 {
+    font-size: 0.95rem;
+  }
+
+  .messages-container {
+    padding: 0.75rem;
+  }
+
+  .chat-welcome h2 {
+    font-size: 1.3rem;
+  }
+
+  .message-input-form {
+    padding: 0.75rem;
+  }
+
+  .message-input {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .btn-send {
+    min-width: 40px;
+    height: 40px;
+  }
+
+  .send-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .pdf-popup-content {
+    padding: 1.25rem;
+  }
+
+  .pdf-popup-content p {
+    font-size: 0.9rem;
+  }
+
+  .btn-download-pdf {
+    font-size: 0.9rem;
+    padding: 0.65rem 0.85rem;
+  }
+}
