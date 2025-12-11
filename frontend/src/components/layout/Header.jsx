@@ -17,7 +17,7 @@ function Header({ user, onLogout, onShowLogin, onShowRegister }) {
     <header className="app-header">
       <div className="header-content">
         <Link to="/" className="logo">
-          <img src="/assets/images/white_logo_MIBS.png" alt="MIBS Logo" className="logo-img" />
+          <img src="/white_logo_MIBS.png" alt="MIBS Logo" className="logo-img" />
           <h1>MIBS AI</h1>
         </Link>
         <nav className="nav-links">

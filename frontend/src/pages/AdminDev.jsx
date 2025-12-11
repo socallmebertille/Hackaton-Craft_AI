@@ -6,8 +6,7 @@ import BackendStatus from '../components/dev/BackendStatus'
 import DatabaseStatus from '../components/dev/DatabaseStatus'
 import AuthSection from '../components/dev/AuthSection'
 import '../styles/AdminDev.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../config/api'
 
 function AdminDev() {
   const navigate = useNavigate()

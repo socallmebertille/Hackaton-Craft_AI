@@ -3,8 +3,7 @@ import axios from 'axios'
 import UserTable from './UserTable'
 import ModeratorModal from './ModeratorModal'
 import '../../styles/admin/index.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../../config/api'
 
 function UserManagement({ user, onUpdate }) {
   const [users, setUsers] = useState([])

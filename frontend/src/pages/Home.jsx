@@ -5,8 +5,7 @@ import Header from '../components/layout/Header'
 import LoginModal from '../components/auth/LoginModal'
 import RegisterModal from '../components/auth/RegisterModal'
 import '../styles/Home.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../config/api'
 
 function Home() {
   const navigate = useNavigate()

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../../config/api'
 
 function DatabaseStatus() {
   const [dbStatus, setDbStatus] = useState(null)

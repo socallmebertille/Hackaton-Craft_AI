@@ -5,8 +5,7 @@ import Header from '../components/layout/Header'
 import UserManagement from '../components/admin/UserManagement'
 import StatsCards from '../components/admin/StatsCards'
 import '../styles/admin/index.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../config/api'
 
 function AdminPanel() {
   const navigate = useNavigate()

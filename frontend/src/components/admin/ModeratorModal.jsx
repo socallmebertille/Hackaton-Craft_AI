@@ -2,8 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import Modal from '../auth/Modal'
 import '../../styles/admin/index.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../../config/api'
 
 function ModeratorModal({ user, onClose, onUpdate }) {
   const [formData, setFormData] = useState({

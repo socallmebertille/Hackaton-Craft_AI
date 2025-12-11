@@ -10,8 +10,7 @@ import { useChat } from './hooks/useChat'
 import { useChatPolling } from './hooks/useChatPolling'
 import { usePdfGenerator } from './hooks/usePdfGenerator'
 import '../../styles/chat/index.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../../config/api'
 
 function Chat() {
   const navigate = useNavigate()
