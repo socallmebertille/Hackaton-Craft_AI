@@ -24,8 +24,8 @@ FROM nginx:alpine
 # Copier les fichiers buildés depuis le stage builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Note: La configuration nginx doit être montée ou copiée depuis l'hôte
-# Voir nginx.conf.example à la racine du projet pour un exemple de configuration
+# Copier la configuration nginx personnalisée pour gérer le SPA routing
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Exposer le port 80
 EXPOSE 80
