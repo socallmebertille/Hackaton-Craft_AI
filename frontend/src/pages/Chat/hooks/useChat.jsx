@@ -123,8 +123,9 @@ export function useChat() {
 
       await loadChats(token)
 
-      localStorage.removeItem('activeChatRequest')
-      setHasActiveRequest(false)
+      // Ne pas arrêter le polling ici !
+      // Le polling continuera jusqu'à ce que la réponse soit reçue
+      // via handleMessageReceived dans Chat.jsx
     } catch (err) {
       console.error('Error sending message:', err)
       alert('Erreur lors de l\'envoi du message')
