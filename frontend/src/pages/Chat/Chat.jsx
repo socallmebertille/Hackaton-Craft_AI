@@ -51,7 +51,7 @@ function Chat() {
   }, [messages])
 
   // Callback pour le polling
-  const handleMessageReceived = useCallback(async (messagesData, token) => {
+  const handleMessageReceived = useCallback(async (messagesData, token, chatId) => {
     const lastUserMsgIndex = messagesData.map(m => m.role).lastIndexOf('user')
     if (lastUserMsgIndex !== -1) {
       const userMessage = messagesData[lastUserMsgIndex]
@@ -66,7 +66,7 @@ function Chat() {
           responses: assistantResponses,
           timestamp: userMessage.created_at
         })
-        setPdfChatId(currentChatId)
+        setPdfChatId(chatId)
       }
     }
 
@@ -76,7 +76,7 @@ function Chat() {
     setSendingChatId(null)
 
     await loadChats(token)
-  }, [currentChatId, setPdfChatId, setLastExchange, setHasActiveRequest, setIsSending, setSendingChatId, loadChats])
+  }, [setPdfChatId, setLastExchange, setHasActiveRequest, setIsSending, setSendingChatId, loadChats])
 
   // Polling automatique (utiliser sendingChatId pour gérer les nouveaux chats)
   useChatPolling(hasActiveRequest, currentChatId, sendingChatId, loadMessages, handleMessageReceived)

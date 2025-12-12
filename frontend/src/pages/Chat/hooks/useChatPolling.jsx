@@ -33,7 +33,7 @@ export function useChatPolling(hasActiveRequest, currentChatId, sendingChatId, l
 
             // Appeler le callback avec les nouvelles données
             if (onMessageReceived) {
-              onMessageReceived(messagesData, token)
+              onMessageReceived(messagesData, token, chatIdToUse)
             }
           } else {
             // Toujours en attente, mettre à jour les messages au cas où
