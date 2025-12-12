@@ -7,17 +7,20 @@ import { API_URL } from '../../../config/api'
  * Vérifie toutes les 3 secondes si de nouveaux messages sont arrivés
  * @param {boolean} hasActiveRequest - Si une requête est active
  * @param {string} currentChatId - ID du chat actif
+ * @param {string} sendingChatId - ID du chat en cours d'envoi (utilisé pour les nouveaux chats)
  * @param {Function} loadMessages - Fonction pour charger les messages
  * @param {Function} onMessageReceived - Callback quand les messages arrivent
  */
-export function useChatPolling(hasActiveRequest, currentChatId, loadMessages, onMessageReceived) {
+export function useChatPolling(hasActiveRequest, currentChatId, sendingChatId, loadMessages, onMessageReceived) {
   useEffect(() => {
-    if (!hasActiveRequest || !currentChatId) return
+    // Utiliser sendingChatId en priorité pour gérer les nouveaux chats
+    const chatIdToUse = sendingChatId || currentChatId
+    if (!hasActiveRequest || !chatIdToUse) return
 
     const checkForMessages = async () => {
       const token = localStorage.getItem('jwt_token')
       try {
-        const response = await axios.get(`${API_URL}/api/chat/${currentChatId}/messages`, {
+        const response = await axios.get(`${API_URL}/api/chat/${chatIdToUse}/messages`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         const messagesData = response.data.messages || []
@@ -26,7 +29,7 @@ export function useChatPolling(hasActiveRequest, currentChatId, loadMessages, on
           const lastMessage = messagesData[messagesData.length - 1]
           if (lastMessage.role === 'assistant') {
             // Réponse arrivée
-            await loadMessages(currentChatId)
+            await loadMessages(chatIdToUse)
 
             // Appeler le callback avec les nouvelles données
             if (onMessageReceived) {
@@ -46,5 +49,5 @@ export function useChatPolling(hasActiveRequest, currentChatId, loadMessages, on
     const interval = setInterval(checkForMessages, 3000)
 
     return () => clearInterval(interval)
-  }, [hasActiveRequest, currentChatId, loadMessages, onMessageReceived])
+  }, [hasActiveRequest, currentChatId, sendingChatId, loadMessages, onMessageReceived])
 }

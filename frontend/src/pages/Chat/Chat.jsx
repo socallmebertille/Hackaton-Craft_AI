@@ -78,8 +78,8 @@ function Chat() {
     await loadChats(token)
   }, [currentChatId, setPdfChatId, setLastExchange, setHasActiveRequest, setIsSending, setSendingChatId, loadChats])
 
-  // Polling automatique
-  useChatPolling(hasActiveRequest, currentChatId, loadMessages, handleMessageReceived)
+  // Polling automatique (utiliser sendingChatId pour gérer les nouveaux chats)
+  useChatPolling(hasActiveRequest, currentChatId, sendingChatId, loadMessages, handleMessageReceived)
 
   // Vérifier l'authentification
   useEffect(() => {
@@ -124,6 +124,8 @@ function Chat() {
 
     sendChatMessage(messageText, (messagesData, messageText) => {
       // Callback après envoi réussi
+      // Note: On ne définit pas setPdfChatId ici car currentChatId peut être null pour un nouveau chat
+      // Le polling via handleMessageReceived s'en chargera quand la réponse arrivera
       const lastUserMsgIndex = messagesData.map(m => m.role).lastIndexOf('user')
       if (lastUserMsgIndex !== -1) {
         const assistantResponses = messagesData
@@ -131,13 +133,14 @@ function Chat() {
           .filter(m => m.role === 'assistant')
           .map(m => m.content.message || m.content.response || '')
 
-        setLastExchange({
-          question: messageText,
-          responses: assistantResponses,
-          timestamp: new Date().toISOString()
-        })
-
-        setPdfChatId(currentChatId)
+        // Seulement si des réponses sont déjà disponibles (rare, mais possible si le backend est très rapide)
+        if (assistantResponses.length > 0) {
+          setLastExchange({
+            question: messageText,
+            responses: assistantResponses,
+            timestamp: new Date().toISOString()
+          })
+        }
       }
     })
   }
