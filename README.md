@@ -19,20 +19,20 @@
 
 ## 📋 Table des matières
 
-- [Vue d'ensemble](#-vue-densemble)
+- [Vue d'ensemble](#vue-densemble)
   - [Problématique](#problématique)
   - [Solution](#solution)
-- [Stack technique](#-stack-technique)
-- [Structure du projet - Clean Architecture par Features](#-structure-du-projet---clean-architecture-par-features)
-- [Pipelines IA - Approche théorique](#-pipelines-ia---approche-théorique)
+- [Stack technique](#stack-technique)
+- [Structure du projet - Clean Architecture par Features](#structure-du-projet---clean-architecture-par-features)
+- [Pipelines IA - Approche théorique](#pipelines-ia---approche-théorique)
   - [Pipeline 0: Analyse d'intention](#pipeline-0-analyse-dintention)
   - [Pipeline 1: Extraction de concepts](#pipeline-1-extraction-de-concepts)
   - [Pipeline 3: Débat contradictoire](#pipeline-3-débat-contradictoire)
   - [Pipeline 4: Citations juridiques](#pipeline-4-citations-juridiques)
-- [Installation](#-installation)
-- [Déploiement des pipelines](#-déploiement-des-pipelines)
-- [API Endpoints](#-api-endpoints)
-- [Documentation](#-documentation)
+- [Installation](#installation)
+- [Déploiement des pipelines](#déploiement-des-pipelines)
+- [API Endpoints](#api-endpoints)
+- [Documentation](#documentation)
 
 ---
 
@@ -175,7 +175,7 @@ Synthèse:
 
 ---
 
-## Installation et Lancement
+## Installation
 
 ### Prérequis
 
