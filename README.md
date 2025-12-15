@@ -1,40 +1,40 @@
 # Juridique AI
 
-Assistant juridique bas� sur l'intelligence artificielle pour g�n�rer des d�bats contradictoires sur des questions juridiques.
+Assistant juridique basé sur l'intelligence artificielle pour générer des débats contradictoires sur des questions juridiques.
 
 ## Stack Technique
 
 - **Backend**: FastAPI (Python 3.11)
 - **Frontend**: React + Vite
 - **IA**: Mistral AI + CraftAI Pipelines
-- **Data**: API L�gifrance (textes juridiques fran�ais)
+- **Data**: API Légifrance (textes juridiques franéais)
 
 ## Structure du Projet
 
 ```
 Juridique-AI/
       backend/               # API FastAPI
-      examples/         # Exemples CraftAI et L�gifrance
-      main.py           # Point d'entr�e de l'API
-      requirements.txt  # D�pendances Python
-      Dockerfile.dev    # Docker pour d�veloppement
+      examples/         # Exemples CraftAI et Légifrance
+      main.py           # Point d'entrée de l'API
+      requirements.txt  # Dépendances Python
+      Dockerfile.dev    # Docker pour développement
       frontend/             # Application React
       src/             # Code source
       assets/          # Images et assets
       legal/           # Documents juridiques
-      package.json     # D�pendances Node
-      Dockerfile.dev   # Docker pour d�veloppement
+      package.json     # Dépendances Node
+      Dockerfile.dev   # Docker pour développement
       docker-compose.dev.yml
 ```
 
 ## Installation et Lancement
 
-### Pr�requis
+### Prérequis
 
 - Docker
 - Docker Compose
 
-### Lancement avec Docker (Recommand�)
+### Lancement avec Docker (Recommandé)
 
 1. **Cloner le repository**
    ```bash
@@ -42,10 +42,10 @@ Juridique-AI/
    cd Juridique-AI
    ```
 
-2. **Cr�er le fichier .env**
+2. **Créer le fichier .env**
    ```bash
    cp .env.example .env
-   # �diter .env si n�cessaire
+   # éditer .env si nécessaire
    ```
 
 3. **Lancer les services**
@@ -53,7 +53,7 @@ Juridique-AI/
    docker-compose -f docker-compose.dev.yml up --build
    ```
 
-4. **Acc�der � l'application**
+4. **Accéder à l'application**
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:8000
    - Documentation API: http://localhost:8000/docs
@@ -78,15 +78,15 @@ npm install
 npm run dev
 ```
 
-## D�veloppement
+## Développement
 
 ### Hot-reload
 
-Les deux services (backend et frontend) sont configur�s avec le hot-reload activ� :
-- Modifications du code Python � rechargement automatique FastAPI
-- Modifications du code React � rechargement automatique Vite
+Les deux services (backend et frontend) sont configurés avec le hot-reload activé :
+- Modifications du code Python é rechargement automatique FastAPI
+- Modifications du code React é rechargement automatique Vite
 
-### Arr�ter les services
+### Arréter les services
 
 ```bash
 docker-compose -f docker-compose.dev.yml down
@@ -108,34 +108,34 @@ docker-compose -f docker-compose.dev.yml logs -f frontend
 ## API Endpoints
 
 - `GET /` - Health check
-- `GET /api/health` - Statut d�taill� du backend
+- `GET /api/health` - Statut détaillé du backend
 - `GET /api/test` - Endpoint de test
 - `GET /docs` - Documentation interactive (Swagger)
 
-## Prochaines �tapes
+## Prochaines étapes
 
-- [ ] Impl�menter l'authentification utilisateur
-- [ ] Cr�er l'interface de chat juridique
-- [ ] Int�grer les pipelines CraftAI
-- [ ] Connecter l'API L�gifrance
-- [ ] G�n�rer les d�bats contradictoires
+- [ ] Implémenter l'authentification utilisateur
+- [ ] Créer l'interface de chat juridique
+- [ ] Intégrer les pipelines CraftAI
+- [ ] Connecter l'API Légifrance
+- [ ] Générer les débats contradictoires
 
 ## Variables d'Environnement
 
-Voir `.env.example` pour la liste compl�te des variables disponibles.
+Voir `.env.example` pour la liste compléte des variables disponibles.
 
 Variables principales :
 - `ENVIRONMENT` - Environnement (development/production)
-- `PORT` - Port du backend (d�faut: 8000)
+- `PORT` - Port du backend (défaut: 8000)
 - `CRAFT_AI_SDK_TOKEN` - Token CraftAI (optionnel)
-- `MISTRAL_API_KEY` - Cl� API Mistral (optionnel)
-- `MIBS_LEGIFRANCE_CLIENT_ID` - Client ID L�gifrance (optionnel)
+- `MISTRAL_API_KEY` - Clé API Mistral (optionnel)
+- `MIBS_LEGIFRANCE_CLIENT_ID` - Client ID Légifrance (optionnel)
 
 ## Documentation
 
 - [Examples CraftAI](./backend/examples/craftai/)
-- [Examples L�gifrance](./backend/examples/legifrance/)
+- [Examples Légifrance](./backend/examples/legifrance/)
 
 ## License
 
-Propri�taire - MIBS
+Propriétaire - MIBS
