@@ -75,13 +75,16 @@ Juridique-AI/
 |   ├── app/                 # Code source de l'API
 │   │   ├── admin/           # Endpoints d'administration
 │   │   ├── ai/              # Pipelines IA et intégrations
+│   │   │   ├── pipelines/   # Code des pipelines CraftAI
+│   │   │   ├── services/    # Services métier (mistral_service.py, etc.)
+│   │   │   ├── scripts/     # Scripts upload/deploy des pipelines
+│   │   │   └── requirements.txt
 │   │   ├── auth/            # Authentification et gestion des utilisateurs
 │   │   ├── chat/            # Logique métier des conversations et orchestration des réponses IA
 │   │   ├── core/            # Configuration globale, dépendances, middlewares
 │   │   ├── database/        # Gestion de la base de données
 │   │   └── main.py          # Création de l'app FastAPI et déclaration des routes
 │   ├── examples/            # Exemples CraftAI et Légifrance
-│   ├── main.py              # Point d'entrée de l'API
 │   ├── requirements.txt     # Dépendances Python
 │   └── Dockerfile           # Image Docker du backend
 ├── frontend/                # Application Frontend web
@@ -97,8 +100,7 @@ Juridique-AI/
 │   │   └── main.jsx         # Point d'entrée React (bootstrap de l'app)
 |   ├── index.html           # Template HTML principal
 │   └── Dockerfile           # Image Docker du frontend
-├── mistra_api.py            # Intégration Mistral API
-└── docker-compose.dev.yml   # Orchestration Docker (frontend + backend + services)
+└── docker-compose.yml       # Orchestration Docker (frontend + backend + services)
 ```
 
 ---
@@ -206,9 +208,6 @@ Synthèse:
 
 3. **Lancer les services**
    ```bash
-   # Développement (avec hot-reload)
-   docker-compose -f docker-compose.dev.yml up --build
-
    # Production
    docker-compose up -d --build
    ```
@@ -224,10 +223,9 @@ Synthèse:
 
 ```bash
 cd backend
-pip install -r requirements.txt
-python main.py
-# ou
-uvicorn main:app --reload
+python -m app.main
+# OU
+uvicorn app.main:app --reload
 ```
 
 #### Frontend
@@ -267,24 +265,48 @@ PIPELINE_0_ENDPOINT_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ## API Endpoints
 
-| Methode | Endpoint                          | Description                                                |
-|---------|-----------------------------------|------------------------------------------------------------|
-| `GET `  | `/`                               | Health check                                               |
-| `GET`   | `/api/health`                     | Statut détaillé du backend                                 |
-| `GET`   | `/api/test`                       | Endpoint de test                                           |
-| `GET`   | `/docs`                           | Documentation interactive (Swagger UI)                     |
-| `POST`  | `/api/chat`                       | Envoyer un message utilisateur et recevoir une réponse IA  |
-| `GET`   | `/api/conversations`              | Lister les conversations                                   |
-| `GET`   | `/api/conversations/{id}`         | Détails d'une conversation                                 |
-| `POST`  | `/api/conversations/{id}/messages`| Ajouter un message à une conversation existante            |
-| `GET`   | `/api/admin/stats`                | Statistiques d'utilisation (admin only)                    |
+### Authentification
+
+| Méthode | Endpoint                  | Description                                |
+|---------|---------------------------|--------------------------------------------|
+| `POST`  | `/api/auth/register`      | Inscription (email de vérification envoyé) |
+| `POST`  | `/api/auth/login`         | Connexion (retourne JWT token)             |
+| `GET`   | `/api/auth/verify-email`  | Vérification email via token               |
+| `GET`   | `/api/auth/me`            | Informations utilisateur connecté          |
+
+### Chat
+
+| Méthode | Endpoint                       | Description                               |
+|---------|--------------------------------|-------------------------------------------|
+| `POST`  | `/api/chat/new`                | Créer une nouvelle conversation           |
+| `POST`  | `/api/chat/message`            | Envoyer un message (orchestration IA)     |
+| `GET`   | `/api/chat/list`               | Lister les conversations de l'utilisateur |
+| `GET`   | `/api/chat/{chat_id}/messages` | Récupérer tous les messages d'un chat     |
+
+### Administration
+
+| Méthode  | Endpoint                | Description                                |
+|----------|-------------------------|--------------------------------------------|
+| `GET`    | `/api/admin/users`      | Lister les utilisateurs (admin/modérateur) |
+| `PATCH`  | `/api/admin/users/{id}` | Mettre à jour un utilisateur               |
+| `DELETE` | `/api/admin/users/{id}` | Supprimer un utilisateur                   |
+| `GET`    | `/api/admin/stats`      | Statistiques d'utilisation                 |
+
+### Santé
+
+| Méthode | Endpoint      | Description                |
+|---------|---------------|----------------------------|
+| `GET`   | `/`           | Health check basique       |
+| `GET`   | `/api/health` | Statut détaillé du backend |
+| `GET`   | `/docs`       | Documentation Swagger UI   |
 
 ---
 
 ## Documentation
 
-- [Examples CraftAI](./backend/examples/craftai/)
-- [Examples Légifrance](./backend/examples/legifrance/)
+- **Pipelines IA** : `backend/app/ai/README.md`
+- **Exemples CraftAI** : `backend/examples/craftai/`
+- **Exemples Légifrance** : `backend/examples/legifrance/`
 
 ## License
 
