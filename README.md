@@ -2,7 +2,10 @@
   <h1>Juridique AI</h1>
   
   <p><strong>Assistant Juridique Intelligent - Hackathon 42 Paris x CraftAI</strong></p>
-  
+  <img alt="last-commit" src="https://img.shields.io/github/last-commit/socallmebertille/Hackaton-Craft_AI?style=flat&amp;logo=git&amp;logoColor=white&amp;color=0080ff" class="inline-block mx-1" style="margin: 0px 2px;">
+  <img alt="repo-top-language" src="https://img.shields.io/github/languages/top/socallmebertille/Hackaton-Craft_AI?style=flat&amp;color=0080ff" class="inline-block mx-1" style="margin: 0px 2px;">
+  <img alt="repo-language-count" src="https://img.shields.io/github/languages/count/socallmebertille/Hackaton-Craft_AI?style=flat&amp;color=0080ff" class="inline-block mx-1" style="margin: 0px 2px;">
+  <p><em>Conçu à l'aide d'outils et de technologies:</em></p>
   <img alt="Python" src="https://img.shields.io/badge/Python-3.11-blue?style=flat&logo=python&logoColor=white">
   <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-latest-009688?style=flat&logo=fastapi&logoColor=white">
   <img alt="React" src="https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=white">
